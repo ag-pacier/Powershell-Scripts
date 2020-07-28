@@ -33,7 +33,7 @@ elseif ((Get-Service -Name $args[0]).Status -notcontains "Running"){
 #Otherwise, set $ServiceName and rename the log file
 else {
     $ServiceName = $args[0]
-    $LogFile = "C:\" + $ServiceName + "_" + $DateStamp + ".txt"
+    $LogFile = "C:\" + $ServiceName + "_restart_log.txt"
 }
 
 #Hashtable used to generate the log
