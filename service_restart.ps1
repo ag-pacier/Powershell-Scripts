@@ -12,7 +12,7 @@ $LogFile = "C:\service_restarter" + "_" + $DateStamp + ".txt"
 #If no arguement, log that you can't do that and stop
 if ($null -eq $args[0]) {
     $Timestamp = Get-Date -Format $TimeStampFormat
-    $msg = $Timestamp + "  :: The service cannot be nothing."
+    $msg = $Timestamp + " :: The service cannot be nothing."
     Add-Content -Path $LogFile -Value $msg
     throw "Need the service name as an arguement"
 }
