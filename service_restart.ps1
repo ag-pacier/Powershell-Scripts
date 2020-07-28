@@ -6,27 +6,27 @@ $ErrorActionPreference = "Stop"
 $TimeStampFormat = "HH:mm:ss"
 $DateStamp = Get-Date -Format "yyyyMMdd"
 #Generically named log file up here so that errors still get logged
-$LogFile = "C:\service_restarter" + "_" + $DateStamp + ".txt"
+$LogFile = "C:\service_restarter_log.txt"
 
 #Make sure argument is valid
 #If no arguement, log that you can't do that and stop
 if ($null -eq $args[0]) {
     $Timestamp = Get-Date -Format $TimeStampFormat
-    $msg = $Timestamp + " :: The service cannot be nothing."
+    $msg = $DateStamp + "_" + $Timestamp + " :: The service cannot be nothing."
     Add-Content -Path $LogFile -Value $msg
     throw "Need the service name as an arguement"
 }
 #Look for the service with that name. If nothing outputs, can't find the service
 elseif ($null -eq (Get-Service -Name $args[0] -ErrorAction SilentlyContinue)){
     $Timestamp = Get-Date -Format $TimeStampFormat
-    $msg = $Timestamp + " :: Unable to find a service that matches the name: " + $args[0]
+    $msg = $DateStamp + "_" + $Timestamp + " :: Unable to find a service that matches the name: " + $args[0]
     Add-Content -Path $LogFile -Value $msg
     throw "Service name not found matching " + $args[0]
 }
 #If the service isn't always running, you cannot restart it
 elseif ((Get-Service -Name $args[0]).Status -notcontains "Running"){
     $Timestamp = Get-Date -Format $TimeStampFormat
-    $msg = $Timestamp + " :: The service named " + $args[0] + " is not currently running."
+    $msg = $DateStamp + "_" + $Timestamp + " :: The service named " + $args[0] + " is not currently running."
     Add-Content -Path $LogFile -Value $msg
     throw "Cannot restart a service not currently running"
 }
@@ -37,7 +37,7 @@ else {
 }
 
 #Hashtable used to generate the log
-$FinalOutput = [ordered]@{ OldStatus = "Not Found"; NewStatus = "Not Found"; StartTime = "none"; FinishTime = "none"; Conclusion = "None" }
+$FinalOutput = @{ OldStatus = "Not Found"; NewStatus = "Not Found"; StartTime = "none"; FinishTime = "none"; Conclusion = "None" }
 
 #Time the script started doing real stuff to aid in troubleshooting
 $FinalOutput["StartTime"] = Get-Date -Format $TimeStampFormat
@@ -60,4 +60,18 @@ if ($FinalOutput["NewStatus"] -contains "Running") {
 $FinalOutput["FinishTime"] = Get-Date -Format $TimeStampFormat
 
 #Output to the log file
-$FinalOutput | Out-String | Add-Content $LogFile
+$msg = "----- START_" + $DateStamp + " -----"
+Add-Content -Path $LogFile -Value $msg
+$Timestamp = Get-Date -Format $TimeStampFormat
+$msg = $Timestamp + " :: Timespan of script execution (Start-Finish): " + $FinalOutput["StartTime"] + " -- " + $FinalOutput["FinishTime"]
+Add-Content -Path $LogFile -Value $msg
+$Timestamp = Get-Date -Format $TimeStampFormat
+$msg = $Timestamp + " :: Current Service Status: " + $FinalOutput["NewStatus"]
+Add-Content -Path $LogFile -Value $msg
+$TimeStamp = Get-Date -Format $TimeStampFormat
+$msg = $Timestamp + " :: Conclusion: " + $FinalOutput["Conclusion"]
+Add-Content -Path $LogFile -Value $msg
+$msg = "----- END_" + $DateStamp + " -----"
+Add-Content -Path $LogFile -Value $msg
+#Used to just pipe out the hashtable, not anymore
+#$FinalOutput | Out-String | Add-Content $LogFile
