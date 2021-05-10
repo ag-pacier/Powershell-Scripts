@@ -8,15 +8,12 @@ $MAC = $MAC -replace ":","-"
 $Serial = Get-CimInstance win32_bios | Select-Object -ExpandProperty SerialNumber
 
 $OutPut = "{0}.txt" -f $env:COMPUTERNAME
-
 New-Item -Path $PWD -ItemType "file" -Name $OutPut
-
 $Contents = "MAC: {0},, Serial: {1}" -f $MAC, $Serial
-
 Add-Content -Path $OutPut -Value $Contents
 
-$message = "Please input info in {0} into Infoblox and NAC before running post_SIDA.ps1" -f $OutPut
-
+$message = "Please input info in {0} into Infoblox and NAC before logging in as root and running 2_post_SIDA_root.ps1" -f $OutPut
 Write-Host $message
 
+Write-Host "Additionally, please ensure the serial number gets logged appropriated."
 Start-Sleep -Seconds 3
