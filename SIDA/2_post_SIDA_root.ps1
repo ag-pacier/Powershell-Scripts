@@ -8,7 +8,7 @@ Write-Host "Setting connection to PRIVATE"
 Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private
 
 Write-Host "Starting printer install, please use IP: 10.11.66.253 if in the SIDA Training Room"
-Start-Process -FilePath ".\HP_printer.exe"
+Start-Process -FilePath ".\upd-pcl6-x64-7.0.0.24832.exe"
 
 Write-Host "Ensure you make a note of what you named the printer for the last step!"
 Write-Host "Enabling Remote Desktop..."
