@@ -4,21 +4,7 @@ Gage Pacier's root SIDA script
 
 #Requires -RunAsAdministrator
 
-Write-Host "Setting connection to PRIVATE"
-
-$Current = Get-NetConnectionProfile -NetworkCategory
-$CommandRep = 0
-
-while ($Current -ne "Private") {
-    Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private
-    Start-Sleep -Seconds 2
-    $CommandRep ++
-    if ($CommandRep -gt 2) {
-        Write-Host "Unable to set the connection to private. Please check the Ethernet connection."
-        Write-Host "Once resolved, please try again."
-        exit
-    }
-}
+Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private
 
 Write-Host "Starting printer install, please use IP: 10.21.66.253 if in the SIDA Training Room"
 Start-Sleep -Seconds 1
